@@ -101,7 +101,6 @@ public class FileBrowser extends AppCompatActivity
             }else {
                 Toast.makeText(getApplicationContext(),"AT THE ROOT - no more back", Toast.LENGTH_SHORT).show();
             }
-
            // super.onBackPressed();
         }
     }
