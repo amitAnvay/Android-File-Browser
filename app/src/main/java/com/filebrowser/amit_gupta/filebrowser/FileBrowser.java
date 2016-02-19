@@ -1,5 +1,9 @@
 package com.filebrowser.amit_gupta.filebrowser;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +37,8 @@ public class FileBrowser extends AppCompatActivity
     private int totalSize;
     ListView listView;
     TextView textView;
+    private final int PICK_FILE_RESULT_CODE = 999;
+    private long timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +105,11 @@ public class FileBrowser extends AppCompatActivity
                 listView.setAdapter(new ArrayAdapter(this,
                         android.R.layout.simple_list_item_1, myList));
             }else {
-                Toast.makeText(getApplicationContext(),"AT THE ROOT - no more back", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"AT THE ROOT Folder, press one more back to Exit App", Toast.LENGTH_SHORT).show();
+                if(System.currentTimeMillis() - timeStamp < 200){
+                    super.onBackPressed();
+                }
+                timeStamp = System.currentTimeMillis();
             }
            // super.onBackPressed();
         }
@@ -176,6 +186,50 @@ public class FileBrowser extends AppCompatActivity
                 Toast.makeText(getApplicationContext(),"Folder is Empty", Toast.LENGTH_SHORT).show();
             }
 
+        }else {
+            String mimeType = MediaFile.getMimeTypeForFile(temp_file.toString()); //getContentResolver().getType(Uri.parse("file://" + temp_file));
+            String fileName = temp_file.getName();
+            int dotposition= fileName.lastIndexOf(".");
+            String file_Extension = "";
+            if(dotposition != -1) {
+                String filename_Without_Ext = fileName.substring(0, dotposition);
+                file_Extension = fileName.substring(dotposition + 1, fileName.length());
+            }
+
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://" + temp_file), mimeType);
+            ResolveInfo info = getPackageManager().resolveActivity(intent,
+                    PackageManager.MATCH_DEFAULT_ONLY);
+            if (info != null) {
+                startActivity(Intent.createChooser(intent, "Complete action using"));
+               // startActivity(intent);
+            }
         }
     }
+//    void pickFile(File aFile) {
+//        Intent theIntent = new Intent(Intent.ACTION_PICK);
+//        theIntent.setData(Uri.fromFile(aFile));  //default file / jump directly to this file/folder
+//        theIntent.putExtra(Intent.EXTRA_TITLE,"A Custom Title"); //optional
+//        theIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS); //optional
+//        try {
+//            startActivityForResult(theIntent,PICK_FILE_RESULT_CODE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode) {
+            case PICK_FILE_RESULT_CODE: {
+                if (resultCode==RESULT_OK && data!=null && data.getData() !=null) {
+                    String theFilePath = data.getData().getPath();
+                    //handle code
+                }
+                break;
+            }
+        }
+    }
+
 }
