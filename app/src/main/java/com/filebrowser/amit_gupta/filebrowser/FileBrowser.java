@@ -159,10 +159,12 @@ public class FileBrowser extends AppCompatActivity
         File temp_file = new File(file, myList.get(j));
 
         if (!temp_file.isFile()) {
-            file = new File(file, myList.get(j));
-            File list[] = file.listFiles();
+            //file = temp_file;
+            File list[] = temp_file.listFiles();
 
-            if(list != null) {
+            if(list != null && list.length > 0) {
+                file = temp_file;
+                myList.clear();
                 for (int i = 0; i < list.length; i++) {
                     myList.add(list[i].getName());
                 }
@@ -171,7 +173,7 @@ public class FileBrowser extends AppCompatActivity
                 listView.setAdapter(new ArrayAdapter(this,
                         android.R.layout.simple_list_item_1, myList));
             }else{
-                Toast.makeText(getApplicationContext(),"No permissions to access this folder", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Folder is Empty", Toast.LENGTH_SHORT).show();
             }
 
         }
