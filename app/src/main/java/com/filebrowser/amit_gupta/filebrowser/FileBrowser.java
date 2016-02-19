@@ -188,12 +188,16 @@ public class FileBrowser extends AppCompatActivity
 
         }else {
             String mimeType = MediaFile.getMimeTypeForFile(temp_file.toString()); //getContentResolver().getType(Uri.parse("file://" + temp_file));
+
             String fileName = temp_file.getName();
             int dotposition= fileName.lastIndexOf(".");
             String file_Extension = "";
             if(dotposition != -1) {
                 String filename_Without_Ext = fileName.substring(0, dotposition);
                 file_Extension = fileName.substring(dotposition + 1, fileName.length());
+            }
+            if(mimeType == null){
+                mimeType = MimeUtils.guessMimeTypeFromExtension(file_Extension);
             }
 
             Intent intent = new Intent();
