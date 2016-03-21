@@ -6,9 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -47,15 +45,6 @@ public class FileBrowser extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,8 +64,10 @@ public class FileBrowser extends AppCompatActivity
         file = new File(root_sd);
         File list[] = file.listFiles();
 
-        for (int i = 0; i < list.length; i++) {
-            myList.add(list[i].getName());
+        if(list != null && list.length > 0) {
+            for (int i = 0; i < list.length; i++) {
+                myList.add(list[i].getName());
+            }
         }
 
         listView.setAdapter(new ArrayAdapter(this,
@@ -94,16 +85,17 @@ public class FileBrowser extends AppCompatActivity
             if(parent != null) {
                 file = new File(parent);
                 File list[] = file.listFiles();
+                if(list != null && list.length > 0) {
+                    myList.clear();
 
-                myList.clear();
-
-                for (int i = 0; i < list.length; i++) {
-                    myList.add(list[i].getName());
+                    for (int i = 0; i < list.length; i++) {
+                        myList.add(list[i].getName());
+                    }
+                    //Toast.makeText(getApplicationContext(), parent, Toast.LENGTH_SHORT).show();
+                    textView.setText(parent);
+                    listView.setAdapter(new ArrayAdapter(this,
+                            android.R.layout.simple_list_item_1, myList));
                 }
-                //Toast.makeText(getApplicationContext(), parent, Toast.LENGTH_SHORT).show();
-                textView.setText(parent);
-                listView.setAdapter(new ArrayAdapter(this,
-                        android.R.layout.simple_list_item_1, myList));
             }else {
                 Toast.makeText(getApplicationContext(),"AT THE ROOT Folder, press one more back to Exit App", Toast.LENGTH_SHORT).show();
                 if(System.currentTimeMillis() - timeStamp < 200){

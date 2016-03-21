@@ -13,8 +13,12 @@
     tools:showIn="@layout/app_bar_file_browser">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textStyle="bold"
+        android:background="@color/colorGrey"
+        android:textColor="@color/colorPrimaryDark"
         android:id="@+id/text1"
         android:text="Hello World!" />
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
