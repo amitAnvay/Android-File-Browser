@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.filebrowser.amit_gupta.filebrowser;
+package com.filebrowser.amit_gupta.filebrowser.activity.fileUtil;
 
 import android.mtp.MtpConstants;
 

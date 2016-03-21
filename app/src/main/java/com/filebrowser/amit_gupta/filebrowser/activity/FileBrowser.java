@@ -1,4 +1,4 @@
-package com.filebrowser.amit_gupta.filebrowser;
+package com.filebrowser.amit_gupta.filebrowser.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +20,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.filebrowser.amit_gupta.filebrowser.activity.fileUtil.MediaFile;
+import com.filebrowser.amit_gupta.filebrowser.activity.fileUtil.MimeUtils;
+import com.filebrowser.amit_gupta.filebrowser.R;
 
 import java.io.File;
 import java.util.ArrayList;
