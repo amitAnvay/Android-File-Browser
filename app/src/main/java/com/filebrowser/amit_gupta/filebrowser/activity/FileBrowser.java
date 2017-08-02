@@ -21,25 +21,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.filebrowser.amit_gupta.filebrowser.R;
 import com.filebrowser.amit_gupta.filebrowser.activity.fileUtil.MediaFile;
 import com.filebrowser.amit_gupta.filebrowser.activity.fileUtil.MimeUtils;
-import com.filebrowser.amit_gupta.filebrowser.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileBrowser extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ListView.OnItemClickListener{
+        implements NavigationView.OnNavigationItemSelectedListener, ListView.OnItemClickListener {
 
+    private final String TAG = FileBrowser.class.getSimpleName();
+    private final int PICK_FILE_RESULT_CODE = 999;
+
+    private List<String> myList = new ArrayList<>();
     private File file;
-    private String TAG = FileBrowser.class.getSimpleName();
-    private List<String> myList = new ArrayList<String>();
     private int numFiles;
     private int totalSize;
     ListView listView;
     TextView textView;
-    private final int PICK_FILE_RESULT_CODE = 999;
     private long timeStamp;
 
     @Override
@@ -58,9 +59,9 @@ public class FileBrowser extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        listView = (ListView)findViewById(R.id.listview);
+        listView = (ListView) findViewById(R.id.listview);
         listView.setOnItemClickListener(this);
-        textView = (TextView)findViewById(R.id.text1);
+        textView = (TextView) findViewById(R.id.text1);
 
         String root_sd = Environment.getExternalStorageDirectory().toString();
         //file = new File(root_sd + "/external_sd");
@@ -68,9 +69,9 @@ public class FileBrowser extends AppCompatActivity
         file = new File(root_sd);
         File list[] = file.listFiles();
 
-        if(list != null && list.length > 0) {
-            for (int i = 0; i < list.length; i++) {
-                myList.add(list[i].getName());
+        if (list != null && list.length > 0) {
+            for (File aList : list) {
+                myList.add(aList.getName());
             }
         }
 
@@ -85,29 +86,29 @@ public class FileBrowser extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            String parent = file.getParent() != null ? file.getParent().toString() : null;
-            if(parent != null) {
+            String parent = file.getParent() != null ? file.getParent() : null;
+            if (parent != null) {
                 file = new File(parent);
                 File list[] = file.listFiles();
-                if(list != null && list.length > 0) {
+                if (list != null && list.length > 0) {
                     myList.clear();
 
-                    for (int i = 0; i < list.length; i++) {
-                        myList.add(list[i].getName());
+                    for (File aList : list) {
+                        myList.add(aList.getName());
                     }
                     //Toast.makeText(getApplicationContext(), parent, Toast.LENGTH_SHORT).show();
                     textView.setText(parent);
                     listView.setAdapter(new ArrayAdapter(this,
                             android.R.layout.simple_list_item_1, myList));
                 }
-            }else {
-                Toast.makeText(getApplicationContext(),"AT THE ROOT Folder, press one more back to Exit App", Toast.LENGTH_SHORT).show();
-                if(System.currentTimeMillis() - timeStamp < 200){
+            } else {
+                Toast.makeText(getApplicationContext(), "AT THE ROOT Folder, press one more back to Exit App", Toast.LENGTH_SHORT).show();
+                if (System.currentTimeMillis() - timeStamp < 200) {
                     super.onBackPressed();
                 }
                 timeStamp = System.currentTimeMillis();
             }
-           // super.onBackPressed();
+            // super.onBackPressed();
         }
     }
 
@@ -120,16 +121,10 @@ public class FileBrowser extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -138,7 +133,6 @@ public class FileBrowser extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
@@ -158,41 +152,37 @@ public class FileBrowser extends AppCompatActivity
         return true;
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int j, long l) {
-
         File temp_file = new File(file, myList.get(j));
-
         if (!temp_file.isFile()) {
             //file = temp_file;
             File list[] = temp_file.listFiles();
 
-            if(list != null && list.length > 0) {
+            if (list != null && list.length > 0) {
                 file = temp_file;
                 myList.clear();
-                for (int i = 0; i < list.length; i++) {
-                    myList.add(list[i].getName());
+                for (File f : list) {
+                    myList.add(f.getName());
                 }
                 //Toast.makeText(getApplicationContext(), file.toString(), Toast.LENGTH_SHORT).show();
                 textView.setText(file.toString());
                 listView.setAdapter(new ArrayAdapter(this,
                         android.R.layout.simple_list_item_1, myList));
-            }else{
-                Toast.makeText(getApplicationContext(),"Folder is Empty", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Folder is empty.", Toast.LENGTH_SHORT).show();
             }
-
-        }else {
+        } else {
             String mimeType = MediaFile.getMimeTypeForFile(temp_file.toString()); //getContentResolver().getType(Uri.parse("file://" + temp_file));
 
             String fileName = temp_file.getName();
-            int dotposition= fileName.lastIndexOf(".");
+            int dotposition = fileName.lastIndexOf(".");
             String file_Extension = "";
-            if(dotposition != -1) {
+            if (dotposition != -1) {
                 String filename_Without_Ext = fileName.substring(0, dotposition);
                 file_Extension = fileName.substring(dotposition + 1, fileName.length());
             }
-            if(mimeType == null){
+            if (mimeType == null) {
                 mimeType = MimeUtils.guessMimeTypeFromExtension(file_Extension);
             }
 
@@ -203,7 +193,7 @@ public class FileBrowser extends AppCompatActivity
                     PackageManager.MATCH_DEFAULT_ONLY);
             if (info != null) {
                 startActivity(Intent.createChooser(intent, "Complete action using"));
-               // startActivity(intent);
+                // startActivity(intent);
             }
         }
     }
@@ -220,10 +210,10 @@ public class FileBrowser extends AppCompatActivity
 //    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case PICK_FILE_RESULT_CODE: {
-                if (resultCode==RESULT_OK && data!=null && data.getData() !=null) {
+                if (resultCode == RESULT_OK && data != null && data.getData() != null) {
                     String theFilePath = data.getData().getPath();
                     //handle code
                 }
@@ -231,5 +221,4 @@ public class FileBrowser extends AppCompatActivity
             }
         }
     }
-
 }
